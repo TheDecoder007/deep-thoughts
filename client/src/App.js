@@ -5,6 +5,7 @@ import {
   InMemoryCache,
   createHttpLink,
 } from "@apollo/client";
+import { setContext } from '@apollo/client/link/context';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -20,8 +21,24 @@ const httpLink = createHttpLink({
   uri: "/graphql",
 });
 
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('id_token');
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
+
+// code below combines the authLink and httpLink objects so that 
+// every request retrieves the token and sets the request 
+// headers before making the request to the API.
+// Automatically sets the HTTP request headers with our token. 
+// This way, our server can receive the request, check the 
+// token's validity, and allow us to continue our request if it is.
 const client = new ApolloClient({
-  link: httpLink,
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 
