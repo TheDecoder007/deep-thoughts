@@ -4,6 +4,7 @@ import { QUERY_THOUGHTS, QUERY_ME_BASIC } from '../utils/queries';
 import ThoughtList from '../components/ThoughtList';
 import Auth from '../utils/auth';
 import FriendList from '../components/FriendList';
+import ThoughtForm from '../components/ThoughtForm';
 
 const Home = () => {
  // use useQuery hook to make query request
@@ -22,7 +23,11 @@ const { data: userData } = useQuery(QUERY_ME_BASIC);
  return (
   <main>
   <div className="flex-row justify-space-between">
-
+  {loggedIn && (
+      <div className="col-12 mb-3">
+        <ThoughtForm />
+      </div>
+    )}
 {/* if user isny loggged in, div will span the full width of the row.
 If they are logged in, will only span 8 col, leaving space 
 for 4 col on the righthand side for friendslist */}
